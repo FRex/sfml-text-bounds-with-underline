@@ -7,7 +7,7 @@ static sf::RectangleShape shapeFromLocalBoundingBox(const T& txt)
     const auto bounds = txt.getLocalBounds();
     sf::RectangleShape ret;
     ret.setFillColor(sf::Color::Red);
-    ret.setPosition(bounds.left, bounds.top);
+    ret.setPosition(sf::Vector2f(bounds.left, bounds.top));
     ret.setSize(sf::Vector2f(bounds.width, bounds.height));
     return ret;
 }
@@ -26,8 +26,8 @@ static sf::String g_string;
 
 static void handleKeyPressed(const sf::Event& eve)
 {
-    if(eve.key.code == sf::Keyboard::Return)
-        g_string += '\n';
+    if(eve.key.code == sf::Keyboard::Enter)
+        g_string += sf::String('\n');
 }
 
 static void handleEvents(sf::RenderWindow& app)
@@ -44,14 +44,14 @@ static void handleEvents(sf::RenderWindow& app)
                 g_string.erase(g_string.getSize() - 1);
 
             if(eve.text.unicode >= ' ') // ignore non text ascii
-                g_string += eve.text.unicode;
+                g_string += sf::String((char32_t)eve.text.unicode);
         }
 
         if(eve.type == sf::Event::KeyPressed)
             handleKeyPressed(eve);
 
         if(eve.type == sf::Event::Resized)
-            app.setView(sf::View(sf::FloatRect(0.f, 0.f, eve.size.width, eve.size.height)));
+            app.setView(sf::View(sf::FloatRect(sf::Vector2f(), sf::Vector2f(eve.size.width, eve.size.height))));
     } // while app poll event eve
 }
 
@@ -63,7 +63,7 @@ static std::string makeInfoString()
 
     ss << "Content:";
     for(int i = 0; i < (int)g_string.getSize(); ++i)
-        ss << ' ' << g_string[i];
+        ss << ' ' << (unsigned)g_string[i];
     ss << std::endl;
 
     return ss.str();
@@ -71,20 +71,21 @@ static std::string makeInfoString()
 
 int main(int argc, char ** argv)
 {
-    sf::RenderWindow app(sf::VideoMode(640u, 480u), "Test");
-
-    sf::Font font;
+    const char * fontname = "DejaVuSans.ttf";
     if(argc > 1)
-        font.loadFromFile(argv[1]);
-    else
-        font.loadFromFile("DejaVuSans.ttf");
+        fontname = argv[1];
+
+    sf::RenderWindow app(sf::VideoMode(sf::Vector2u(640u, 480u)), fontname);
+    sf::Font font;
+    if(!font.loadFromFile(fontname))
+        return 1;
 
     if(argc > 2)
         g_string = argv[2];
 
-    sf::Text infotext("", font, 30u);
+    sf::Text infotext(font, "", 30u);
 
-    sf::Text txt1("", font, 200u);
+    sf::Text txt1(font, "", 200u);
     txt1.setStyle(sf::Text::Underlined);
 
     while(app.isOpen())
@@ -93,7 +94,7 @@ int main(int argc, char ** argv)
         handleEvents(app);
 
         sf::Transformable transformable;
-        transformable.move(100.f, 100.f);
+        transformable.move(sf::Vector2f(100.f, 100.f));
 
         app.clear();
 
