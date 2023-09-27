@@ -541,16 +541,6 @@ void Text2::ensureGeometryUpdate() const
         maxY = std::max(maxY, vert.position.y);
     }
 
-    // If we're using outline, update the current bounds
-    if (m_outlineThickness != 0)
-    {
-        const float outline = std::abs(std::ceil(m_outlineThickness));
-        minX -= outline;
-        maxX += outline;
-        minY -= outline;
-        maxY += outline;
-    }
-
     // Update the bounding rectangle
     m_bounds.left   = minX;
     m_bounds.top    = minY;
