@@ -1,5 +1,15 @@
 #include <SFML/Graphics.hpp>
 
+static sf::RectangleShape shapeFromLocalBoundingBox(const sf::Text& txt)
+{
+    const auto bounds = txt.getLocalBounds();
+    sf::RectangleShape ret;
+    ret.setFillColor(sf::Color::Red);
+    ret.setPosition(bounds.left, bounds.top);
+    ret.setSize(sf::Vector2f(bounds.width, bounds.height));
+    return ret;
+}
+
 int main()
 {
     sf::RenderWindow app(sf::VideoMode(640u, 480u), "Test");
@@ -9,15 +19,6 @@ int main()
 
     sf::Text txt("Test", font, 200);
     txt.setStyle(sf::Text::Underlined);
-    const auto bounds = txt.getLocalBounds();
-
-    sf::RectangleShape sha;
-    sha.setFillColor(sf::Color::Red);
-    sha.setPosition(bounds.left, bounds.top);
-    sha.setSize(sf::Vector2f(bounds.width, bounds.height));
-
-    txt.move(100.f, 100.f);
-    sha.move(100.f, 100.f);
 
     while(app.isOpen())
     {
@@ -26,9 +27,12 @@ int main()
             if(eve.type == sf::Event::Closed)
                 app.close();
 
+        sf::Transformable transformable;
+        transformable.move(100.f, 100.f);
+
         app.clear();
-        app.draw(sha);
-        app.draw(txt);
+        app.draw(shapeFromLocalBoundingBox(txt), transformable.getTransform());
+        app.draw(txt, transformable.getTransform());
         app.display();
     }
 }
