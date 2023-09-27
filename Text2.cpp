@@ -505,16 +505,6 @@ void Text2::ensureGeometryUpdate() const
         x += glyph.advance + letterSpacing;
     }
 
-    // If we're using outline, update the current bounds
-    if (m_outlineThickness != 0)
-    {
-        const float outline = std::abs(std::ceil(m_outlineThickness));
-        minX -= outline;
-        maxX += outline;
-        minY -= outline;
-        maxY += outline;
-    }
-
     // If we're using the underlined style, add the last line
     if (isUnderlined && (x > 0))
     {
@@ -531,6 +521,34 @@ void Text2::ensureGeometryUpdate() const
 
         if (m_outlineThickness != 0)
             addLine(m_outlineVertices, x, y, m_outlineColor, strikeThroughOffset, underlineThickness, m_outlineThickness);
+    }
+
+    for(int i = 0; i < m_vertices.getVertexCount(); ++i)
+    {
+        const sf::Vertex vert = m_vertices[i];
+        minX = std::min(minX, vert.position.x);
+        minY = std::min(minY, vert.position.y);
+        maxX = std::max(maxX, vert.position.x);
+        maxY = std::max(maxY, vert.position.y);
+    }
+
+    for(int i = 0; i < m_outlineVertices.getVertexCount(); ++i)
+    {
+        const sf::Vertex vert = m_outlineVertices[i];
+        minX = std::min(minX, vert.position.x);
+        minY = std::min(minY, vert.position.y);
+        maxX = std::max(maxX, vert.position.x);
+        maxY = std::max(maxY, vert.position.y);
+    }
+
+    // If we're using outline, update the current bounds
+    if (m_outlineThickness != 0)
+    {
+        const float outline = std::abs(std::ceil(m_outlineThickness));
+        minX -= outline;
+        maxX += outline;
+        minY -= outline;
+        maxY += outline;
     }
 
     // Update the bounding rectangle
