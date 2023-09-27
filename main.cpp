@@ -31,7 +31,7 @@ static bool g_strike = true;
 static int g_outlinesize = 0;
 
 template <typename T>
-static void doit(sf::RenderWindow& app, const sf::Font& font, sf::Transform transform)
+static sf::FloatRect doit(sf::RenderWindow& app, const sf::Font& font, sf::Transform transform)
 {
     T txt(font, g_string, 100u);
     unsigned styles = 0u;
@@ -56,8 +56,10 @@ static void doit(sf::RenderWindow& app, const sf::Font& font, sf::Transform tran
 
     txt.setStyle(styles);
     app.draw(shapeFromLocalBoundingBoxAt00(txt), transform);
-    app.draw(shapeFromLocalBoundingBox(txt), transform);
+    const auto sha = shapeFromLocalBoundingBox(txt);
+    app.draw(sha, transform);
     app.draw(txt, transform);
+    return sf::FloatRect(sha.getPosition(), sha.getSize());
 }
 
 static void handleKeyPressed(const sf::Event& eve)
@@ -109,6 +111,13 @@ static void handleEvents(sf::RenderWindow& app)
     } // while app poll event eve
 }
 
+static std::string floatRectToString(const sf::FloatRect rect)
+{
+    std::ostringstream ss;
+    ss << rect.left << ' ' << rect.top << ' ' << rect.width << ' ' << rect.height;
+    return ss.str();
+}
+
 static std::string makeInfoString()
 {
     std::ostringstream ss;
@@ -157,10 +166,16 @@ int main(int argc, char ** argv)
         app.draw(sf::Text(font, makeInfoString(), 16u));
 
         sf::Transformable transformable;
+
         transformable.move(sf::Vector2f(app.getView().getSize().x / 4.f, 100.f));
-        doit<sf::Text>(app, font, transformable.getTransform());
+        const auto box1 = doit<sf::Text>(app, font, transformable.getTransform());
+
         transformable.move(sf::Vector2f(0.f, 500.f));
-        doit<sf::Text2>(app, font, transformable.getTransform());
+        const auto box2 = doit<sf::Text2>(app, font, transformable.getTransform());
+
+        sf::Text boxsizetext(font, floatRectToString(box1) + "\n" + floatRectToString(box2), 16u);
+        boxsizetext.move(sf::Vector2f(0.f, 200.f));
+        app.draw(boxsizetext);
 
         app.display();
     }
