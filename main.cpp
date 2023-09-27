@@ -24,12 +24,30 @@ static sf::RectangleShape shapeFromLocalBoundingBoxAt00(const T& txt)
 }
 
 static sf::String g_string;
+static bool g_underline = true;
+static bool g_italize = false;
+static bool g_bold = false;
+static bool g_strike = false;
 
 template <typename T>
 static void doit(sf::RenderWindow& app, const sf::Font& font, sf::Transform transform)
 {
     T txt(font, g_string, 100u);
-    txt.setStyle(T::Underlined);
+    unsigned styles = 0u;
+
+    if(g_underline)
+        styles |= T::Underlined;
+
+    if(g_italize)
+        styles |= T::Italic;
+
+    if(g_strike)
+        styles |= T::StrikeThrough;
+
+    if(g_bold)
+        styles |= T::Bold;
+
+    txt.setStyle(styles);
     app.draw(shapeFromLocalBoundingBoxAt00(txt), transform);
     app.draw(shapeFromLocalBoundingBox(txt), transform);
     app.draw(txt, transform);
@@ -39,6 +57,19 @@ static void handleKeyPressed(const sf::Event& eve)
 {
     if(eve.key.code == sf::Keyboard::Enter)
         g_string += sf::String('\n');
+
+    if(eve.key.code == sf::Keyboard::I && eve.key.control)
+        g_italize = !g_italize;
+
+    if(eve.key.code == sf::Keyboard::U && eve.key.control)
+        g_underline = !g_underline;
+
+    if(eve.key.code == sf::Keyboard::S && eve.key.control)
+        g_strike = !g_strike;
+
+    if(eve.key.code == sf::Keyboard::B && eve.key.control)
+        g_bold = !g_bold;
+
 }
 
 static void handleEvents(sf::RenderWindow& app)
@@ -94,22 +125,13 @@ int main(int argc, char ** argv)
     if(argc > 2)
         g_string = argv[2];
 
-    sf::Text infotext(font, "", 16u);
-
-    sf::Text txt1(font, "", 100u);
-    txt1.setStyle(sf::Text::Underlined);
-
-    sf::Text2 txt2(font, "", 100u);
 
     while(app.isOpen())
     {
-        sf::Event eve;
         handleEvents(app);
 
         app.clear();
-
-        infotext.setString(makeInfoString());
-        app.draw(infotext);
+        app.draw(sf::Text(font, makeInfoString(), 16u));
 
         sf::Transformable transformable;
         transformable.move(sf::Vector2f(200.f, 50.f));
