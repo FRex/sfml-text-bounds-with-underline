@@ -1,6 +1,7 @@
 #include <SFML/Graphics.hpp>
 
-static sf::RectangleShape shapeFromLocalBoundingBox(const sf::Text& txt)
+template <typename T>
+static sf::RectangleShape shapeFromLocalBoundingBox(const T& txt)
 {
     const auto bounds = txt.getLocalBounds();
     sf::RectangleShape ret;
