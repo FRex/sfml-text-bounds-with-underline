@@ -69,12 +69,18 @@ static std::string makeInfoString()
     return ss.str();
 }
 
-int main()
+int main(int argc, char ** argv)
 {
     sf::RenderWindow app(sf::VideoMode(640u, 480u), "Test");
 
     sf::Font font;
-    font.loadFromFile("DejaVuSans.ttf");
+    if(argc > 1)
+        font.loadFromFile(argv[1]);
+    else
+        font.loadFromFile("DejaVuSans.ttf");
+
+    if(argc > 2)
+        g_string = argv[2];
 
     sf::Text infotext("", font, 30u);
 
