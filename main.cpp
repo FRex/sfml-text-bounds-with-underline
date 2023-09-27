@@ -157,7 +157,7 @@ int main(int argc, char ** argv)
         app.draw(sf::Text(font, makeInfoString(), 16u));
 
         sf::Transformable transformable;
-        transformable.move(sf::Vector2f(200.f, 150.f));
+        transformable.move(sf::Vector2f(app.getView().getSize().x / 4.f, 100.f));
         doit<sf::Text>(app, font, transformable.getTransform());
         transformable.move(sf::Vector2f(0.f, 500.f));
         doit<sf::Text2>(app, font, transformable.getTransform());
