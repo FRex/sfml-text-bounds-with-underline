@@ -47,7 +47,7 @@ class Font;
 /// \brief Graphical text that can be drawn to a render target
 ///
 ////////////////////////////////////////////////////////////
-class SFML_GRAPHICS_API Text : public Drawable, public Transformable
+class SFML_GRAPHICS_API Text2 : public Drawable, public Transformable
 {
 public:
     ////////////////////////////////////////////////////////////
@@ -78,13 +78,13 @@ public:
     /// \param characterSize  Base size of characters, in pixels
     ///
     ////////////////////////////////////////////////////////////
-    Text(const Font& font, String string = "", unsigned int characterSize = 30);
+    Text2(const Font& font, String string = "", unsigned int characterSize = 30);
 
     ////////////////////////////////////////////////////////////
     /// \brief Disallow construction from a temporary font
     ///
     ////////////////////////////////////////////////////////////
-    Text(Font&& font, String string = "", unsigned int characterSize = 30) = delete;
+    Text2(Font&& font, String string = "", unsigned int characterSize = 30) = delete;
 
     ////////////////////////////////////////////////////////////
     /// \brief Set the text's string

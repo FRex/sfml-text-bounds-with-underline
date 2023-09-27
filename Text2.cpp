@@ -27,7 +27,7 @@
 ////////////////////////////////////////////////////////////
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include "Text2.hpp"
 #include <SFML/Graphics/Texture.hpp>
 
 #include <algorithm>
@@ -96,7 +96,7 @@ void addGlyphQuad(sf::VertexArray& vertices, sf::Vector2f position, const sf::Co
 namespace sf
 {
 ////////////////////////////////////////////////////////////
-Text::Text(const Font& font, String string, unsigned int characterSize) :
+Text2::Text2(const Font& font, String string, unsigned int characterSize) :
 m_string(std::move(string)),
 m_font(&font),
 m_characterSize(characterSize)
@@ -105,7 +105,7 @@ m_characterSize(characterSize)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setString(const String& string)
+void Text2::setString(const String& string)
 {
     if (m_string != string)
     {
@@ -116,7 +116,7 @@ void Text::setString(const String& string)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setFont(const Font& font)
+void Text2::setFont(const Font& font)
 {
     if (m_font != &font)
     {
@@ -127,7 +127,7 @@ void Text::setFont(const Font& font)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setCharacterSize(unsigned int size)
+void Text2::setCharacterSize(unsigned int size)
 {
     if (m_characterSize != size)
     {
@@ -138,7 +138,7 @@ void Text::setCharacterSize(unsigned int size)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setLetterSpacing(float spacingFactor)
+void Text2::setLetterSpacing(float spacingFactor)
 {
     if (m_letterSpacingFactor != spacingFactor)
     {
@@ -149,7 +149,7 @@ void Text::setLetterSpacing(float spacingFactor)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setLineSpacing(float spacingFactor)
+void Text2::setLineSpacing(float spacingFactor)
 {
     if (m_lineSpacingFactor != spacingFactor)
     {
@@ -160,7 +160,7 @@ void Text::setLineSpacing(float spacingFactor)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setStyle(std::uint32_t style)
+void Text2::setStyle(std::uint32_t style)
 {
     if (m_style != style)
     {
@@ -171,7 +171,7 @@ void Text::setStyle(std::uint32_t style)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setFillColor(const Color& color)
+void Text2::setFillColor(const Color& color)
 {
     if (color != m_fillColor)
     {
@@ -189,7 +189,7 @@ void Text::setFillColor(const Color& color)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setOutlineColor(const Color& color)
+void Text2::setOutlineColor(const Color& color)
 {
     if (color != m_outlineColor)
     {
@@ -207,7 +207,7 @@ void Text::setOutlineColor(const Color& color)
 
 
 ////////////////////////////////////////////////////////////
-void Text::setOutlineThickness(float thickness)
+void Text2::setOutlineThickness(float thickness)
 {
     if (thickness != m_outlineThickness)
     {
@@ -218,70 +218,70 @@ void Text::setOutlineThickness(float thickness)
 
 
 ////////////////////////////////////////////////////////////
-const String& Text::getString() const
+const String& Text2::getString() const
 {
     return m_string;
 }
 
 
 ////////////////////////////////////////////////////////////
-const Font& Text::getFont() const
+const Font& Text2::getFont() const
 {
     return *m_font;
 }
 
 
 ////////////////////////////////////////////////////////////
-unsigned int Text::getCharacterSize() const
+unsigned int Text2::getCharacterSize() const
 {
     return m_characterSize;
 }
 
 
 ////////////////////////////////////////////////////////////
-float Text::getLetterSpacing() const
+float Text2::getLetterSpacing() const
 {
     return m_letterSpacingFactor;
 }
 
 
 ////////////////////////////////////////////////////////////
-float Text::getLineSpacing() const
+float Text2::getLineSpacing() const
 {
     return m_lineSpacingFactor;
 }
 
 
 ////////////////////////////////////////////////////////////
-std::uint32_t Text::getStyle() const
+std::uint32_t Text2::getStyle() const
 {
     return m_style;
 }
 
 
 ////////////////////////////////////////////////////////////
-const Color& Text::getFillColor() const
+const Color& Text2::getFillColor() const
 {
     return m_fillColor;
 }
 
 
 ////////////////////////////////////////////////////////////
-const Color& Text::getOutlineColor() const
+const Color& Text2::getOutlineColor() const
 {
     return m_outlineColor;
 }
 
 
 ////////////////////////////////////////////////////////////
-float Text::getOutlineThickness() const
+float Text2::getOutlineThickness() const
 {
     return m_outlineThickness;
 }
 
 
 ////////////////////////////////////////////////////////////
-Vector2f Text::findCharacterPos(std::size_t index) const
+Vector2f Text2::findCharacterPos(std::size_t index) const
 {
     // Adjust the index if it's out of range
     if (index > m_string.getSize())
@@ -332,7 +332,7 @@ Vector2f Text::findCharacterPos(std::size_t index) const
 
 
 ////////////////////////////////////////////////////////////
-FloatRect Text::getLocalBounds() const
+FloatRect Text2::getLocalBounds() const
 {
     ensureGeometryUpdate();
 
@@ -341,14 +341,14 @@ FloatRect Text::getLocalBounds() const
 
 
 ////////////////////////////////////////////////////////////
-FloatRect Text::getGlobalBounds() const
+FloatRect Text2::getGlobalBounds() const
 {
     return getTransform().transformRect(getLocalBounds());
 }
 
 
 ////////////////////////////////////////////////////////////
-void Text::draw(RenderTarget& target, const RenderStates& states) const
+void Text2::draw(RenderTarget& target, const RenderStates& states) const
 {
     ensureGeometryUpdate();
 
@@ -366,14 +366,14 @@ void Text::draw(RenderTarget& target, const RenderStates& states) const
 
 
 ////////////////////////////////////////////////////////////
-void Text::ensureGeometryUpdate() const
+void Text2::ensureGeometryUpdate() const
 {
     // Do nothing, if geometry has not changed and the font texture has not changed
-    if (!m_geometryNeedUpdate && m_font->getTexture(m_characterSize).m_cacheId == m_fontTextureId)
-        return;
+    // if (!m_geometryNeedUpdate && m_font->getTexture(m_characterSize).m_cacheId == m_fontTextureId)
+        // return;
 
     // Save the current fonts texture id
-    m_fontTextureId = m_font->getTexture(m_characterSize).m_cacheId;
+    // m_fontTextureId = m_font->getTexture(m_characterSize).m_cacheId;
 
     // Mark geometry as updated
     m_geometryNeedUpdate = false;

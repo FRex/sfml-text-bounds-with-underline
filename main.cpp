@@ -1,5 +1,6 @@
 #include <SFML/Graphics.hpp>
 #include <sstream>
+#include "Text2.hpp"
 
 template <typename T>
 static sf::RectangleShape shapeFromLocalBoundingBox(const T& txt)
@@ -23,6 +24,16 @@ static sf::RectangleShape shapeFromLocalBoundingBoxAt00(const T& txt)
 }
 
 static sf::String g_string;
+
+template <typename T>
+static void doit(sf::RenderWindow& app, const sf::Font& font, sf::Transform transform)
+{
+    T txt(font, g_string, 100u);
+    txt.setStyle(T::Underlined);
+    app.draw(shapeFromLocalBoundingBoxAt00(txt), transform);
+    app.draw(shapeFromLocalBoundingBox(txt), transform);
+    app.draw(txt, transform);
+}
 
 static void handleKeyPressed(const sf::Event& eve)
 {
@@ -83,28 +94,28 @@ int main(int argc, char ** argv)
     if(argc > 2)
         g_string = argv[2];
 
-    sf::Text infotext(font, "", 30u);
+    sf::Text infotext(font, "", 16u);
 
-    sf::Text txt1(font, "", 200u);
+    sf::Text txt1(font, "", 100u);
     txt1.setStyle(sf::Text::Underlined);
+
+    sf::Text2 txt2(font, "", 100u);
 
     while(app.isOpen())
     {
         sf::Event eve;
         handleEvents(app);
 
-        sf::Transformable transformable;
-        transformable.move(sf::Vector2f(100.f, 100.f));
-
         app.clear();
 
         infotext.setString(makeInfoString());
         app.draw(infotext);
 
-        txt1.setString(g_string);
-        app.draw(shapeFromLocalBoundingBoxAt00(txt1), transformable.getTransform());
-        app.draw(shapeFromLocalBoundingBox(txt1), transformable.getTransform());
-        app.draw(txt1, transformable.getTransform());
+        sf::Transformable transformable;
+        transformable.move(sf::Vector2f(200.f, 50.f));
+        doit<sf::Text>(app, font, transformable.getTransform());
+        transformable.move(sf::Vector2f(0.f, 450.f));
+        doit<sf::Text2>(app, font, transformable.getTransform());
 
         app.display();
     }
